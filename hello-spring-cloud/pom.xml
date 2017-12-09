@@ -12,14 +12,29 @@
 
 	<artifactId>hello-spring-cloud</artifactId>
 
-	<name>hello-spring-cloud</name>
-	<url>http://maven.apache.org</url>
-
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<dependencies>
-
+	    <!-- Spring Boot Web 起步依赖 -->
+	    <dependency>
+	        <groupId>org.springframework.boot</groupId>
+	        <artifactId>spring-boot-starter-web</artifactId>
+	    </dependency>
+	    
+	    <!-- Spring Boot Test 起步依赖 -->
+	    <dependency>
+	        <groupId>org.springframework.boot</groupId>
+	        <artifactId>spring-boot-starter-test</artifactId>
+	        <scope>test</scope>
+	    </dependency>
+	    
+	    <!-- Spring Cloud Eureka 起步依赖 -->
+	    <dependency>
+	        <groupId>org.springframework.cloud</groupId>
+	        <artifactId>spring-cloud-starter-eureka</artifactId>
+	    </dependency>
 	</dependencies>
+	<description>Spring Cloud 中的服务提供方</description>
 </project>
