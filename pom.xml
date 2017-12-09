@@ -13,10 +13,32 @@
 		<sl4fj.log4j.version>1.7.21</sl4fj.log4j.version>
 		<apache.common.lang3.version>3.4</apache.common.lang3.version>
 		<apache.common.collection.version>3.2.1</apache.common.collection.version>
+		<spring.boot.dependencies.version>1.5.9.RELEASE</spring.boot.dependencies.version>
+		<spring.cloud.dependencies.version>Edgware.RELEASE</spring.cloud.dependencies.version>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
+		    <!-- Spring Boot dependencies -->
+		    <dependency>
+                <!-- 从Spring Boot中导入依赖管理,进而避免项目parent依赖Spring Boot -->
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            
+            <!-- Spring Cloud dependencies -->
+            <dependency>
+                <!-- 从Spring Cloud中导入依赖管理,进而避免项目parent依赖Spring Cloud -->
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring.cloud.dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            
 			<!-- junit -->
 			<dependency>
 				<groupId>junit</groupId>
@@ -48,6 +70,7 @@
 	
 	<modules>
 		<module>hello-spring-cloud</module>
+		<module>hello-eureka-server</module>
 	</modules>
 
 </project>
