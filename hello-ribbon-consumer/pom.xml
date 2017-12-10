@@ -31,12 +31,11 @@
 	    </dependency>
 	    
 	    <!-- Spring Cloud Ribbon 起步依赖 -->
-	    <!-- 对服务示例进行选择的策略 -->
-	    <!-- 经过测试,对于一个简单的示例, 似乎不加入这个包也没有影响 -->
-	    <!-- <dependency>
+	    <!-- 对服务示例进行选择的策略, 这个依赖是必要的, RestTemplate做客户端负载均衡时,会使用Ribbon的自动化配置 -->
+	    <dependency>
 	        <groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-ribbon</artifactId>
-	    </dependency> -->
+	    </dependency>
 	</dependencies>
 
 	<build>

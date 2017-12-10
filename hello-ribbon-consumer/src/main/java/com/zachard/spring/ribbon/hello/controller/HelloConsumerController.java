@@ -40,7 +40,7 @@ public class HelloConsumerController {
 	 * 
 	 * @return    响应实体
 	 */
-	@GetMapping(value = "/ribbon/consumer")
+	@GetMapping(value = "/consumer/get")
 	public String helloConsumer() {
 		/*
 		 * getForEntity方法通过对指定URL发起GET请求并检索获取对应的实体,响应被转换
@@ -48,8 +48,11 @@ public class HelloConsumerController {
 		 * 
 		 * 注: (1) RestTemplate消费注册中心服务的方式, 消费者必须和服务提供者注册到同一注册中心
 		 */
-		return restTemplate.getForEntity("http://zachard-service-1/discovery", String.class)
-				.getBody();
+//		return restTemplate.getForEntity("http://zachard-service-1/discovery", String.class)
+//				.getBody();
+		
+		// RestTemplate处理GET请求的另外一种方式
+		return restTemplate.getForObject("http://zachard-service-1/discovery", String.class);
 	}
 
 }
