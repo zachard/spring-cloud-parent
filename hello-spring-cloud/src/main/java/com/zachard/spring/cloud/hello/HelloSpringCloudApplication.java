@@ -26,7 +26,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  * 
  * <pre>
  *     (1) {@link EnableDiscoveryClient}用于开启一个{@link DiscoveryClient}的实现
- *         {@link DiscoveryClient}定义了一种通用的可以获取已经发现的服务的操作
+ *         {@link DiscoveryClient}定义了一种通用的可以获取已经发现的服务的操作(开启发现服务的能力)
  *     (2) {@link SpringBootApplication}注解的作用见<code>Spring Boot</code>学习代码
  * </pre>
  *
