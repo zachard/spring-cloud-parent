@@ -18,6 +18,8 @@ package com.zachard.spring.ribbon.hello;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.SpringCloudApplication;
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
@@ -34,13 +36,18 @@ import org.springframework.web.client.RestTemplate;
  *         项目加入spring-cloud-starter-eureka架包并配置eureka.client.serviceUrl.defaultZone注册中心
  *         地址之后, 不加入{@link EnableDiscoveryClient}似乎也没有影响
  *     (2) {@link SpringBootApplication}注解的作用见<code>Spring Boot</code>学习代码
+ *     (3) {@link EnableCircuitBreaker}注解表示在程序中开启断路器功能
+ *     (4) {@link SpringCloudApplication}注解作用等同于程序同时加入{@link SpringBootApplication}注解
+ *         {@link EnableDiscoveryClient}服务发现注解及{@link EnableCircuitBreaker}断路器注解
  * </pre>
  *
  * @author zachard
  * @version 1.0.0
  */
+@EnableCircuitBreaker
 @EnableDiscoveryClient
 @SpringBootApplication
+//@SpringCloudApplication
 public class HelloRibbonConsumerApplication {
 	
 	/**

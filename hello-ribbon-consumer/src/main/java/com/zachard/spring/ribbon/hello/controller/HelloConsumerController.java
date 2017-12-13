@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.zachard.spring.ribbon.hello.service.HelloConsumerService;
+
 /**
  * <code>Spring Ribbon</code>服务消费者Controller示例
  * <pre>
@@ -34,6 +36,9 @@ public class HelloConsumerController {
 	
 	@Autowired
 	RestTemplate restTemplate;
+	
+	@Autowired
+	HelloConsumerService helloConsumerService;
 	
 	/**
 	 * <code>Spring Ribbon</code>服务消费者请求示例
@@ -53,6 +58,16 @@ public class HelloConsumerController {
 		
 		// RestTemplate处理GET请求的另外一种方式
 		return restTemplate.getForObject("http://zachard-service-1/discovery", String.class);
+	}
+	
+	/**
+	 * <code>Spring Hystrix</code>断路器请求入口
+	 * 
+	 * @return    响应信息
+	 */
+	@GetMapping("/hystrix/get")
+	public String helloHystrix() {
+		return helloConsumerService.helloHystrix();
 	}
 
 }

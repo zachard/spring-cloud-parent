@@ -36,6 +36,13 @@
 	        <groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-ribbon</artifactId>
 	    </dependency>
+	    
+	    <!-- Spring Cloud Hystrix 起步依赖 -->
+	    <!-- 在消费者应用程序中加入断路器功能 -->
+	    <dependency>
+	        <groupId>org.springframework.cloud</groupId>
+	        <artifactId>spring-cloud-starter-hystrix</artifactId>
+	    </dependency>
 	</dependencies>
 
 	<build>
