@@ -16,11 +16,15 @@
 
 package com.zachard.spring.ribbon.hello.controller;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.zachard.spring.ribbon.hello.service.HelloConsumerService;
 
 /**
@@ -68,6 +72,20 @@ public class HelloConsumerController {
 	@GetMapping("/hystrix/get")
 	public String helloHystrix() {
 		return helloConsumerService.helloHystrix();
+	}
+	
+	/**
+	 * <code>Spring Hystrix</code>断路器请求入口 -- {@link HystrixCommand}处理方式为异步
+	 * 
+	 * @return    响应信息
+	 * @throws InterruptedException
+	 * @throws ExecutionException
+	 */
+	@GetMapping("/hystrix/get/async")
+	public String helloHystrixAsync() throws InterruptedException, ExecutionException {
+		Future<String> future = helloConsumerService.helloHystrixAsync();
+		
+		return future.get();
 	}
 
 }

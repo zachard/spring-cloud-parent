@@ -16,11 +16,14 @@
 
 package com.zachard.spring.ribbon.hello.service;
 
+import java.util.concurrent.Future;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.command.AsyncResult;
 
 /**
  * <code>Spring Cloud Hystrix</code>断路器测试Service类
@@ -37,7 +40,7 @@ public class HelloConsumerService {
 	RestTemplate restTemplate;
 	
 	/**
-	 * <code>Spring Cloud Hystrix</code>断路器Service方法
+	 * <code>Spring Cloud Hystrix</code>断路器Service方法 - 同步执行的方式
 	 * 
 	 * <pre>
 	 *     (1) {@link HystrixCommand}表示断路器命令, 定义请求无响应或是超时的回调方法等属性
@@ -49,7 +52,30 @@ public class HelloConsumerService {
 	 */
 	@HystrixCommand(fallbackMethod = "hystrixFallback")
 	public String helloHystrix() {
+		// 此HystrixCommand注解命令会同步执行
 		return restTemplate.getForObject("http://zachard-service-1/discovery", String.class);
+	}
+	
+	/**
+	 * <code>Spring Cloud Hystrix</code>断路器Service方法 - 异步执行的方式
+	 * 
+	 * <pre>
+	 *     (1) {@link AsyncResult}用于方法签名中, 表示异步执行返回的结果类型
+	 *         {@link AsyncResult#invoke()}方法用户封装异步调用的逻辑
+	 * </pre>
+	 * 
+	 * @return    正常服务响应
+	 */
+	@HystrixCommand
+	public Future<String> helloHystrixAsync() {
+		// 此HystrixCommand注解命令会异步执行
+		return new AsyncResult<String>() {
+			@Override
+			public String invoke() {
+				return restTemplate.getForObject("http://zachard-service-1/discovery", String.class);
+			}
+		};
+		
 	}
 	
 	/**
