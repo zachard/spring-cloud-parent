@@ -62,7 +62,8 @@ public class HelloConsumerService {
 	 * </pre>
 	 * @return    正常服务调用响应
 	 */
-	@HystrixCommand(fallbackMethod = "hystrixFallback", ignoreExceptions= {BadPaddingException.class})
+	@HystrixCommand(fallbackMethod = "hystrixFallback", ignoreExceptions= {BadPaddingException.class}, 
+			commandKey = "helloHystrix", groupKey = "helloHystrixGroup", threadPoolKey = "helloHystrixThreadPool")
 	public String helloHystrix() {
 		// 此HystrixCommand注解命令会同步执行
 		return restTemplate.getForObject("http://zachard-service-1/discovery", String.class);

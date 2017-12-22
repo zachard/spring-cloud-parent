@@ -21,6 +21,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestTemplate;
 
 import com.netflix.hystrix.HystrixCommand;
+import com.netflix.hystrix.HystrixCommandGroupKey;
+import com.netflix.hystrix.HystrixCommandKey;
+import com.netflix.hystrix.HystrixThreadPoolKey;
 import com.zachard.spring.ribbon.hello.service.HelloConsumerService;
 
 import rx.Observable;
@@ -49,11 +52,17 @@ public class CustomHystrixCommand extends HystrixCommand<String> {
 	/**
 	 * 自定义<code>HystrixCommand</code>命令实现方式
 	 * 
-	 * @param setter
 	 * @param restTemplate
 	 */
-	public CustomHystrixCommand(Setter setter, RestTemplate restTemplate) {
-		super(setter);
+	public CustomHystrixCommand(RestTemplate restTemplate) {
+		/*
+		 * withGroupKey用于设置命令所属组名, andCommandKey用于设置命令名, andThreadPoolKey用于指定执行命令的线程池
+		 * 注: (1) 只有withGroupKey方法可以创建Setter实例, 并且命令分组为必要属性
+		 *     (2) 默认情况下, Hystrix命令默认的线程划分是根据命令分组实现
+		 */
+		super(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("customHystrixCommandGroup"))
+				.andCommandKey(HystrixCommandKey.Factory.asKey("customHystrixCommand"))
+				.andThreadPoolKey(HystrixThreadPoolKey.Factory.asKey("customThreadPool")));
 		this.restTemplate = restTemplate;
 	}
 
