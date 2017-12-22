@@ -62,5 +62,17 @@ public class CustomHystrixCommand extends HystrixCommand<String> {
 	protected String run() throws Exception {
 		return restTemplate.getForObject("http://zachard-service-1/discovery", String.class);
 	}
+	
+	/**
+	 * {@link HystrixCommand}服务降级逻辑处理方法
+	 * 
+	 * <pre>
+	 *     (1) 当{@link #run()}方法执行过程中出现错误、超时、线程池拒绝、断路器熔断等情况时, 执行的方法
+	 * </pre>
+	 */
+	@Override
+	protected String getFallback() {
+		return "Something Wrong!";
+	}
 
 }

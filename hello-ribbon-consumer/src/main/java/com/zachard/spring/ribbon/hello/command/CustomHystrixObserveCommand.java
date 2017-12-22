@@ -85,5 +85,14 @@ public class CustomHystrixObserveCommand extends HystrixObservableCommand<String
 			}
 		});
 	}
+	
+	/**
+	 * {@link HystrixObservableCommand}服务降级处理方法
+	 * 
+	 */
+	@Override
+	protected Observable<String> resumeWithFallback() {
+		return Observable.empty();
+	}
 
 }

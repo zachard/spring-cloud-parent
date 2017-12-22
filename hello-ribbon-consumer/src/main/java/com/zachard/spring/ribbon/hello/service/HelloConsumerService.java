@@ -141,6 +141,11 @@ public class HelloConsumerService {
 	 * @return    错误信息
 	 */
 	public String hystrixFallback() {
+		/*
+		 *  作为一个服务降级处理方法, 如果存在网络请求会导致回调方法出现异常, 所以也应该
+		 *  通过@HystrixCommand为其指定服务降级方法
+		 *  所以个人认为: 服务降级回调的方法应该是尽量稳定的代码
+		 */
 		return "Something Wrong!";
 	}
 
