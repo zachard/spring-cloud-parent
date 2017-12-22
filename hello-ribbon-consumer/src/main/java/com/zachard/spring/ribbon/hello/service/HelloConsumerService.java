@@ -22,8 +22,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.netflix.hystrix.HystrixObservableCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.ObservableExecutionMode;
 import com.netflix.hystrix.contrib.javanica.command.AsyncResult;
+
+import rx.Observable;
+import rx.Observable.OnSubscribe;
+import rx.Subscriber;
 
 /**
  * <code>Spring Cloud Hystrix</code>断路器测试Service类
@@ -76,6 +82,57 @@ public class HelloConsumerService {
 			}
 		};
 		
+	}
+	
+	/**
+	 * <code>Spring Cloud Hystrix</code>断路器Service方法 - {@link Observable}响应式执行方式
+	 * 
+	 * <pre>
+	 *     (1) {@link ObservableExecutionMode#EAGER}表示以{@link com.netflix.hystrix.HystrixCommand#observe()}
+	 *         方式执行, 当<code>observe</code>被调用时, 命令会立即执行, 并且在<code>Observable</code>
+	 *         每次被订阅的时候会重放它的行为
+	 *         而{@link ObservableExecutionMode#LAZY}表示以{@link com.netflix.hystrix.HystrixCommand#toObservable()}
+	 *         方式执行, 当<code>toObservable</code>被调用时, 命令不会执行, 只有当所有订阅者订阅它之后才执行
+	 *     (2) 传统的{@link Observable}只能发射一次数据, 而通过{@link HystrixObservableCommand}实现的命令可以能获取
+	 *         发射多次的{@link Observable}, 本方法即为{@link HystrixObservableCommand}的命令实现
+	 *     (3) {@link Observable}用于为观察者提供订阅事件的方法
+	 * </pre>
+	 * 
+	 * @return    正常响应
+	 */
+	@HystrixCommand(observableExecutionMode = ObservableExecutionMode.EAGER)
+	public Observable<String> helloHystrixObservable() {
+		/*
+		 *  create方法返回一个Observable对象
+		 *  当有Subscriber订阅Observable的时候, 会触发它执行某个特定的方法
+		 *  
+		 *  OnSubscribe表示某种具体的操作, 比如说订阅? 
+		 *  当Observable.subscribe调用时, 会调用其call方法
+		 */
+		return Observable.create(new OnSubscribe<String>() {
+			/*
+			 * Subscriber提供了获取事件发布的通知的机制, 并且允许人工手动解除对事件的订阅
+			 */
+			@Override
+			public void call(Subscriber<? super String> observer) {
+				try {
+					// isUnsubscribed用于判断Subscriber是否退订事件
+					if (!observer.isUnsubscribed()) {
+						String response = restTemplate
+								.getForObject("http://zachard-service-1/discovery", String.class);
+						/*
+						 *  当一个Subscriber调用Observable的subscribe方法时, 
+						 *  Observable会调用Subscriber的onNext来发送项目
+						 *  并且按照最佳实践, 之后应该调用Subscriber的onCompleted或onError方法退出程序
+						 */
+						observer.onNext(response);
+						observer.onCompleted();
+					}
+				} catch (Exception e) {
+					observer.onError(e);
+				}
+			}
+		});
 	}
 	
 	/**
