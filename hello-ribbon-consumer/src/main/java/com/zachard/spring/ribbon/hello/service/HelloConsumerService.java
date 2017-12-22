@@ -18,6 +18,10 @@ package com.zachard.spring.ribbon.hello.service;
 
 import java.util.concurrent.Future;
 
+import javax.crypto.BadPaddingException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -42,6 +46,8 @@ import rx.Subscriber;
 @Service
 public class HelloConsumerService {
 	
+	private static final Logger logger = LoggerFactory.getLogger(HelloConsumerService.class);
+	
 	@Autowired
 	RestTemplate restTemplate;
 	
@@ -56,7 +62,7 @@ public class HelloConsumerService {
 	 * </pre>
 	 * @return    正常服务调用响应
 	 */
-	@HystrixCommand(fallbackMethod = "hystrixFallback")
+	@HystrixCommand(fallbackMethod = "hystrixFallback", ignoreExceptions= {BadPaddingException.class})
 	public String helloHystrix() {
 		// 此HystrixCommand注解命令会同步执行
 		return restTemplate.getForObject("http://zachard-service-1/discovery", String.class);
@@ -137,10 +143,15 @@ public class HelloConsumerService {
 	
 	/**
 	 * 断路器回调方法
+	 * <pre>
+	 *    (1) 通过传入{@link Throwable}参数, 获取程序处理过程中出现的异常
+	 * </pre>
 	 * 
 	 * @return    错误信息
 	 */
-	public String hystrixFallback() {
+	public String hystrixFallback(Throwable e) {
+		logger.error("请求出现异常: {}", e);
+		
 		/*
 		 *  作为一个服务降级处理方法, 如果存在网络请求会导致回调方法出现异常, 所以也应该
 		 *  通过@HystrixCommand为其指定服务降级方法

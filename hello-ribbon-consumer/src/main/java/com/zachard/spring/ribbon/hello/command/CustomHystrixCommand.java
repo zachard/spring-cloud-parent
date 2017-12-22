@@ -16,6 +16,8 @@
 
 package com.zachard.spring.ribbon.hello.command;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestTemplate;
 
 import com.netflix.hystrix.HystrixCommand;
@@ -40,8 +42,16 @@ import rx.Observable;
  */
 public class CustomHystrixCommand extends HystrixCommand<String> {
 	
+	private static final Logger logger = LoggerFactory.getLogger(CustomHystrixCommand.class);
+	
 	private RestTemplate restTemplate;
 
+	/**
+	 * 自定义<code>HystrixCommand</code>命令实现方式
+	 * 
+	 * @param setter
+	 * @param restTemplate
+	 */
 	public CustomHystrixCommand(Setter setter, RestTemplate restTemplate) {
 		super(setter);
 		this.restTemplate = restTemplate;
@@ -68,10 +78,12 @@ public class CustomHystrixCommand extends HystrixCommand<String> {
 	 * 
 	 * <pre>
 	 *     (1) 当{@link #run()}方法执行过程中出现错误、超时、线程池拒绝、断路器熔断等情况时, 执行的方法
+	 *     (2) 在服务降级处理逻辑方法中, 通过{@link #getExecutionException()}获取程序处理过程中发生的异常
 	 * </pre>
 	 */
 	@Override
 	protected String getFallback() {
+		logger.error("请求出现异常: {}", getExecutionException());
 		return "Something Wrong!";
 	}
 

@@ -16,6 +16,8 @@
 
 package com.zachard.spring.ribbon.hello.command;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestTemplate;
 
 import com.netflix.hystrix.HystrixObservableCommand;
@@ -33,6 +35,8 @@ import rx.Subscriber;
  * @version 1.0.0
  */
 public class CustomHystrixObserveCommand extends HystrixObservableCommand<String> {
+	
+	private static final Logger logger = LoggerFactory.getLogger(CustomHystrixObserveCommand.class);
 	
 	private RestTemplate restTemplate;
 
@@ -88,10 +92,14 @@ public class CustomHystrixObserveCommand extends HystrixObservableCommand<String
 	
 	/**
 	 * {@link HystrixObservableCommand}服务降级处理方法
+	 * <pre>
+	 *     (1) 在服务降级方法逻辑中, 通过{@link #getExecutionException()}获取程序处理过程中出现的异常
+	 * </pre>
 	 * 
 	 */
 	@Override
 	protected Observable<String> resumeWithFallback() {
+		logger.error("请求处理出现异常: {}", getExecutionException());
 		return Observable.empty();
 	}
 
