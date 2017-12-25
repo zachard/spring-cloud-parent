@@ -102,5 +102,18 @@ public class CustomHystrixObserveCommand extends HystrixObservableCommand<String
 		logger.error("请求处理出现异常: {}", getExecutionException());
 		return Observable.empty();
 	}
+	
+	/**
+	 * 针对高并发情况下, 开启<code>Hystrix</code>请求缓存
+	 * <pre>
+	 * </pre>
+	 * 
+	 * @return  请求缓存的key
+	 */
+	@Override
+	protected String getCacheKey() {
+		// 实际不为硬编码, 而是根据某种方式获取
+		return "cacheKey";
+	}
 
 }

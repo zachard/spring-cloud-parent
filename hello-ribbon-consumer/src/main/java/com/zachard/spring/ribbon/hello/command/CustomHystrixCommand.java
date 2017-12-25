@@ -23,7 +23,9 @@ import org.springframework.web.client.RestTemplate;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
+import com.netflix.hystrix.HystrixRequestCache;
 import com.netflix.hystrix.HystrixThreadPoolKey;
+import com.netflix.hystrix.strategy.concurrency.HystrixConcurrencyStrategyDefault;
 import com.zachard.spring.ribbon.hello.service.HelloConsumerService;
 
 import rx.Observable;
@@ -47,6 +49,16 @@ public class CustomHystrixCommand extends HystrixCommand<String> {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CustomHystrixCommand.class);
 	
+	/**
+	 * 考虑到清楚缓存, 将CommandKey作为一个只读的属性
+	 */
+	private static final HystrixCommandKey COMMAND_KEY = HystrixCommandKey.Factory.asKey("customHystrixCommand");
+	
+	/**
+	 * 缓存的key值, 实际不为硬编码, 而是根据某种方式获取
+	 */
+	private static final String CACHE_KEY = "cacheKey";
+	
 	private RestTemplate restTemplate;
 
 	/**
@@ -61,7 +73,7 @@ public class CustomHystrixCommand extends HystrixCommand<String> {
 		 *     (2) 默认情况下, Hystrix命令默认的线程划分是根据命令分组实现
 		 */
 		super(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("customHystrixCommandGroup"))
-				.andCommandKey(HystrixCommandKey.Factory.asKey("customHystrixCommand"))
+				.andCommandKey(COMMAND_KEY)
 				.andThreadPoolKey(HystrixThreadPoolKey.Factory.asKey("customThreadPool")));
 		this.restTemplate = restTemplate;
 	}
@@ -94,6 +106,37 @@ public class CustomHystrixCommand extends HystrixCommand<String> {
 	protected String getFallback() {
 		logger.error("请求出现异常: {}", getExecutionException());
 		return "Something Wrong!";
+	}
+	
+	/**
+	 * 针对高并发情况下, 开启<code>Hystrix</code>请求缓存
+	 * <pre>
+	 * </pre>
+	 * 
+	 * @return  请求缓存的key
+	 */
+	@Override
+	protected String getCacheKey() {
+		// 实际不为硬编码, 而是根据某种方式获取
+		return CACHE_KEY;
+	}
+	
+	/**
+	 * 清除<code>Hystrix</code>的缓存
+	 * 
+	 * <pre>
+	 *     (1) 调用方式: <code>CustomHystrixCommand.flushCache</code>
+	 *                  清除当前命令下对应的缓存的key下面的缓存
+	 * </pre>
+	 */
+	public static void flushCache() {
+		/*
+		 *  根据缓存的id来清楚缓存
+		 *  
+		 *  clear方法用于清除指定缓存key的缓存
+		 */
+		HystrixRequestCache.getInstance(COMMAND_KEY, 
+				HystrixConcurrencyStrategyDefault.getInstance()).clear(CACHE_KEY);
 	}
 
 }
