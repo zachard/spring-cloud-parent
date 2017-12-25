@@ -29,6 +29,9 @@ import org.springframework.web.client.RestTemplate;
 import com.netflix.hystrix.HystrixObservableCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.ObservableExecutionMode;
+import com.netflix.hystrix.contrib.javanica.cache.annotation.CacheKey;
+import com.netflix.hystrix.contrib.javanica.cache.annotation.CacheRemove;
+import com.netflix.hystrix.contrib.javanica.cache.annotation.CacheResult;
 import com.netflix.hystrix.contrib.javanica.command.AsyncResult;
 
 import rx.Observable;
@@ -59,12 +62,18 @@ public class HelloConsumerService {
 	 *         fallbackMethod表示断路器的回调方法
 	 *         ignoreExceptions属性表示发生某些异常时,不进入断路器方法,而是选择抛出异常
 	 *         其他属性见文档...
+	 *     (2) {@link CacheResult}必须与{@link HystrixCommand}注解结合使用, 用于表明
+	 *         <code>HystrixCommand</code>请求结果可被缓存, 并将请求的所有参数值作为缓存的key值
+	 *     (3) {@link CacheKey}与{@link CacheResult}的作用一致, 也可用于生成缓存的key, 但是它的
+	 *         优先级比<code>cacheKeyMethod</code>低, 如果通过<code>cacheKeyMethod</code>指定了
+	 *         生成缓存key的方法, 则{@link CacheKey}不生效
 	 * </pre>
 	 * @return    正常服务调用响应
 	 */
+	//@CacheResult(cacheKeyMethod = "generateCacheKey")
 	@HystrixCommand(fallbackMethod = "hystrixFallback", ignoreExceptions= {BadPaddingException.class}, 
 			commandKey = "helloHystrix", groupKey = "helloHystrixGroup", threadPoolKey = "helloHystrixThreadPool")
-	public String helloHystrix() {
+	public String helloHystrix(@CacheKey("id") Long id) {
 		// 此HystrixCommand注解命令会同步执行
 		return restTemplate.getForObject("http://zachard-service-1/discovery", String.class);
 	}
@@ -143,6 +152,21 @@ public class HelloConsumerService {
 	}
 	
 	/**
+	 * 对数据进行更新操作
+	 * 
+	 * <pre>
+	 *     (1) {@link CacheRemove}注解用于清除缓存中的数据, 其<code>commandKey</code>必须设置
+	 *         并且该属性设置生成的key需与{@link CacheResult}一致
+	 * </pre>
+	 * @param id    更新操作请求参数
+	 */
+	@CacheRemove(commandKey = "generateCacheKey")
+	@HystrixCommand
+	public void helloCacheRemove(@CacheKey("id") Long id) {
+		// 执行信息的更新操作
+	}
+	
+	/**
 	 * 断路器回调方法
 	 * <pre>
 	 *    (1) 通过传入{@link Throwable}参数, 获取程序处理过程中出现的异常
@@ -159,6 +183,17 @@ public class HelloConsumerService {
 		 *  所以个人认为: 服务降级回调的方法应该是尽量稳定的代码
 		 */
 		return "Something Wrong!";
+	}
+	
+	/**
+	 * {@link CacheResult} 生成缓存key的方法
+	 * 
+	 * @param cacheKey   生成换成key所需的参数
+	 * @return           缓存的key
+	 */
+	@SuppressWarnings("unused")
+	private String generateCacheKey(String cacheKey) {
+		return cacheKey;
 	}
 
 }

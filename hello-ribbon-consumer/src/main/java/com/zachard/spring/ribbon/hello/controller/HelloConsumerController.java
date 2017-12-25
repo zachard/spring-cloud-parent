@@ -71,7 +71,7 @@ public class HelloConsumerController {
 	 */
 	@GetMapping("/hystrix/get")
 	public String helloHystrix() {
-		return helloConsumerService.helloHystrix();
+		return helloConsumerService.helloHystrix(0L);
 	}
 	
 	/**
