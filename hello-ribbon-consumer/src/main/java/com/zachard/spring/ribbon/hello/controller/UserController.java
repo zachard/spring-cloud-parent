@@ -53,7 +53,8 @@ public class UserController {
 	@GetMapping("/user/{id}")
 	public User query(@PathVariable("id") Long id) {
 		logger.info("根据用户编号查询用户详情, query请求参数: {}", id);
-		return userService.queryById(id);
+		//return userService.queryById(id);
+		return userService.helloCollapser(id);
 	}
 	
 	/**
