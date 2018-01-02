@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.zachard.spring.cloud</groupId>
+		<artifactId>spring-cloud-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>hello-feign-consumer</artifactId>
+	<name>hello-feign-consumer</name>
+
+	<properties>
+	    <java.version>1.8</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+	    <!-- Spring Boot Web 起步依赖 -->
+	    <dependency>
+	        <groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+	    </dependency>
+	    
+	    <!-- Spring Cloud Eureka 起步依赖 -->
+	    <!-- 这个包需要加入, 主要是为了连接到Eureka注册中心, 引入这个包之后, 必须配置注册中心地址, 否则项目启动出错 -->
+	    <dependency>
+	        <groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-eureka</artifactId>
+	    </dependency>
+	    
+	    <dependency>
+	        <groupId>org.springframework.cloud</groupId>
+	        <artifactId>spring-cloud-starter-feign</artifactId>
+	    </dependency>
+	</dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<!-- 不配置这个插件，spring boot项目可能跑不起来 -->
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<!-- 由于 parent 依赖不是 spring-boot-starter-parent，所以要配置重新打包 -->
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	<description>feign服务消费者</description>
+</project>

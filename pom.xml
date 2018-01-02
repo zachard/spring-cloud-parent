@@ -71,6 +71,7 @@
 		<module>hello-spring-cloud</module>
 		<module>hello-eureka-server</module>
     <module>hello-ribbon-consumer</module>
+    <module>hello-feign-consumer</module>
   </modules>
 
 </project>
