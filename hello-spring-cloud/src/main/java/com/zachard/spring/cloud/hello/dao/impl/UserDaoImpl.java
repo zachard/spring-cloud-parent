@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.zachard.spring.cloud.hello.dao.UserDao;
@@ -36,6 +38,8 @@ import com.zachard.spring.cloud.hello.model.User;
  */
 @Service
 public class UserDaoImpl implements UserDao {
+	
+	private static final Logger logger = LoggerFactory.getLogger(UserDaoImpl.class);
 	
 	/**
 	 * 模拟数据库的User表
@@ -63,6 +67,7 @@ public class UserDaoImpl implements UserDao {
 	 */
 	@Override
 	public User queryById(Long id) {
+		logger.info("查询参数为, id: {}", id);
 		return users.stream()
 				.filter(user -> Objects.equals(user.getId(), id))
 				.findFirst().get();
@@ -76,6 +81,7 @@ public class UserDaoImpl implements UserDao {
 	 */
 	@Override
 	public List<User> queryListByIds(List<Long> ids) {
+		logger.info("查询参数为, ids: {}", ids);
 		return users.stream()
 				.filter(user -> ids.contains(user.getId()))
 				.collect(Collectors.toList());

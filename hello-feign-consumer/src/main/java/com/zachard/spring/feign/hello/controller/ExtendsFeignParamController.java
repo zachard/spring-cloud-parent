@@ -14,23 +14,19 @@
  *    limitations under the License.
  */
 
-package com.zachard.spring.cloud.hello.controller;
+package com.zachard.spring.feign.hello.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.zachard.spring.cloud.hello.model.User;
-import com.zachard.spring.cloud.hello.service.UserService;
+import com.zachard.service.api.hello.dto.User;
+import com.zachard.spring.feign.hello.service.ExtendsFeignParamService;
 
 /**
- * <code>Feign</code>服务提供者--请求参数绑定示例
+ * 通过继承方式实现<code>Feign</code>方式服务调用请求入口
+ * 
  * <pre>
  * </pre>
  *
@@ -38,21 +34,21 @@ import com.zachard.spring.cloud.hello.service.UserService;
  * @version 1.0.0
  */
 @RestController
-@RequestMapping("/feign")
-public class FeignParamController {
+@RequestMapping("/extends")
+public class ExtendsFeignParamController {
 	
 	@Autowired
-	private UserService userService;
+	private ExtendsFeignParamService extendsFeignParamService;
 	
 	/**
-	 * <code>GET</code>请求中url?param=value请求方式
+	 * <code>GET</code>请求中url?name=value请求参数格式
 	 * 
-	 * @param name    参数名
-	 * @return        请求响应信息
+	 * @param name
+	 * @return
 	 */
 	@GetMapping("/requestParam")
-	public String requestParam(@RequestParam String name) {
-		return "Hello: " + name;
+	public String requestParam() {
+		return extendsFeignParamService.requestParam("章三");
 	}
 	
 	/**
@@ -63,8 +59,8 @@ public class FeignParamController {
 	 * @return    请求响应体
 	 */
 	@GetMapping("/requestHeader")
-	public User requestHeader(@RequestHeader Long id, @RequestHeader String name) {
-		return new User(id, name);
+	public User requestHeader() {
+		return extendsFeignParamService.requestHeader(2L, "王武");
 	}
 	
 	/**
@@ -73,9 +69,9 @@ public class FeignParamController {
 	 * @param id    用户ID
 	 * @return
 	 */
-	@GetMapping("/pathVariable/{id}")
-	public User pathVariable(@PathVariable("id") Long id) {
-		return userService.queryById(id);
+	@GetMapping("/pathVariable")
+	public User pathVariable() {
+		return extendsFeignParamService.pathVariable(1L);
 	}
 	
 	/**
@@ -84,9 +80,9 @@ public class FeignParamController {
 	 * @param user   请求实体
 	 * @return       请求响应
 	 */
-	@PostMapping("/requestBody")
-	public String requestBody(@RequestBody User user) {
-		return "Hello, " + user.getName() + " Your ID is: " + user.getId();
+	@GetMapping("/requestBody")
+	public String requestBody() {
+		return extendsFeignParamService.requestBody(new User(3L, "卓七"));
 	}
 
 }

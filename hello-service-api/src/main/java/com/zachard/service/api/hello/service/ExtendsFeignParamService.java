@@ -14,9 +14,8 @@
  *    limitations under the License.
  */
 
-package com.zachard.spring.cloud.hello.controller;
+package com.zachard.service.api.hello.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,48 +23,48 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
-import com.zachard.spring.cloud.hello.model.User;
-import com.zachard.spring.cloud.hello.service.UserService;
+import com.zachard.service.api.hello.dto.User;
 
 /**
- * <code>Feign</code>服务提供者--请求参数绑定示例
+ * 通过在一个公共的模块中定义一个Service, 然后服务提供者实现该接口(将其作为Controller父类), 而服务消费者
+ * 继承该接口并将接口声明为<code>Feign</code>客户端来实现接口远程调用(将其作为Service父类)
+ * 
  * <pre>
  * </pre>
  *
  * @author zachard
  * @version 1.0.0
  */
-@RestController
-@RequestMapping("/feign")
-public class FeignParamController {
-	
-	@Autowired
-	private UserService userService;
+@RequestMapping("/extends/feign")
+public interface ExtendsFeignParamService {
 	
 	/**
 	 * <code>GET</code>请求中url?param=value请求方式
+	 * 
+	 * <pre>
+	 *     (1) 注意<code>@RequestParam</code>的value属性不能为空
+	 * </pre>
 	 * 
 	 * @param name    参数名
 	 * @return        请求响应信息
 	 */
 	@GetMapping("/requestParam")
-	public String requestParam(@RequestParam String name) {
-		return "Hello: " + name;
-	}
+	String requestParam(@RequestParam("name") String name);
 	
 	/**
 	 * <code>GET</code>请求将参数放入Header的请求方式
+	 * 
+	 * <pre>
+	 *     (1) 注意<code>@RequestHeader</code>的属性不能为空
+	 * </pre>
 	 * 
 	 * @param id     <code>GET</code>请求中Header请求参数
 	 * @param name   <code>GET</code>请求中Header请求参数
 	 * @return    请求响应体
 	 */
 	@GetMapping("/requestHeader")
-	public User requestHeader(@RequestHeader Long id, @RequestHeader String name) {
-		return new User(id, name);
-	}
+	User requestHeader(@RequestHeader("id") Long id, @RequestHeader("name") String name);
 	
 	/**
 	 * <code>GET</code>请求将参数放入请求路径中的请求方式
@@ -74,9 +73,7 @@ public class FeignParamController {
 	 * @return
 	 */
 	@GetMapping("/pathVariable/{id}")
-	public User pathVariable(@PathVariable("id") Long id) {
-		return userService.queryById(id);
-	}
+	User pathVariable(@PathVariable("id") Long id);
 	
 	/**
 	 * <code>POST</code>请求将请求参数放入请求体请求方式
@@ -85,8 +82,6 @@ public class FeignParamController {
 	 * @return       请求响应
 	 */
 	@PostMapping("/requestBody")
-	public String requestBody(@RequestBody User user) {
-		return "Hello, " + user.getName() + " Your ID is: " + user.getId();
-	}
+	String requestBody(@RequestBody User user);
 
 }
