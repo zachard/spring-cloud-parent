@@ -22,19 +22,24 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.zachard.spring.feign.hello.model.User;
+import com.zachard.spring.feign.hello.service.impl.FeignParamServiceFallback;
 
 /**
  * <code>Feign</code>请求服务参数格式Service接口
+ * 
  * <pre>
+ *     (1) {@link FeignClient}注解中的<b>fallback</b>属性指定了服务降级对应类
  * </pre>
  *
  * @author zachard
  * @version 1.0.0
  */
-@FeignClient("zachard-service-1")
+@FeignClient(value = "zachard-service-1", fallback = FeignParamServiceFallback.class)
 public interface FeignParamService {
 	
 	/**
@@ -42,12 +47,13 @@ public interface FeignParamService {
 	 * 
 	 * <pre>
 	 *     (1) 注: <code>@RequestParam</code>注解中必须执行value属性
+	 *     (2) {@link FeignClient}注解客户端中的方法不能使用{@link GetMapping}这种注解
 	 * </pre>
 	 * 
 	 * @param name
 	 * @return
 	 */
-	@GetMapping("/feign/requestParam")
+	@RequestMapping(value = "/feign/requestParam", method = {RequestMethod.GET})
 	String requestParam(@RequestParam("name") String name);
 	
 	/**
@@ -55,13 +61,14 @@ public interface FeignParamService {
 	 * 
 	 * <pre>
 	 *     (1) 注: <code>@RequestHeader</code>中必须指定value属性值
+	 *     (2) {@link FeignClient}注解客户端中的方法不能使用{@link GetMapping}这种注解
 	 * </pre>
 	 * 
 	 * @param id     <code>GET</code>请求中Header请求参数
 	 * @param name   <code>GET</code>请求中Header请求参数
 	 * @return    请求响应体
 	 */
-	@GetMapping("/feign/requestHeader")
+	@RequestMapping(value = "/feign/requestHeader", method = {RequestMethod.GET})
 	User requestHeader(@RequestHeader("id") Long id, @RequestHeader("name") String name);
 	
 	/**
@@ -69,21 +76,26 @@ public interface FeignParamService {
 	 * 
 	 * <pre>
 	 *     (1) 注: <code>@PathVariable</code>中必须指定属性的值
+	 *     (2) {@link FeignClient}注解客户端中的方法不能使用{@link GetMapping}这种注解
 	 * </pre>
 	 * 
 	 * @param id    用户ID
 	 * @return
 	 */
-	@GetMapping("/feign/pathVariable/{id}")
+	@RequestMapping(value = "/feign/pathVariable/{id}", method = {RequestMethod.GET})
 	User pathVariable(@PathVariable("id") Long id);
 	
 	/**
 	 * <code>POST</code>请求将请求参数放入请求体请求方式
 	 * 
+	 * <pre>
+	 *     (1) {@link FeignClient}注解客户端中的方法不能使用{@link PostMapping}这种注解
+	 * </pre>
+	 * 
 	 * @param user   请求实体
 	 * @return       请求响应
 	 */
-	@PostMapping("/feign/requestBody")
+	@RequestMapping(value = "/feign/requestBody", method = {RequestMethod.POST})
 	String requestBody(@RequestBody User user);
 
 }

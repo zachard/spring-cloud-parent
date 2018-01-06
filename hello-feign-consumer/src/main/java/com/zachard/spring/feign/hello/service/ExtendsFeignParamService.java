@@ -18,8 +18,6 @@ package com.zachard.spring.feign.hello.service;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
 
-import com.zachard.spring.feign.hello.configuration.DisableHystrixConfiguration;
-
 /**
  * 通过继承特性实现<code>Feign</code>方式服务调用--服务消费方Service
  * 
@@ -30,7 +28,8 @@ import com.zachard.spring.feign.hello.configuration.DisableHystrixConfiguration;
  * @author zachard
  * @version 1.0.0
  */
-@FeignClient(name = "zachard-service-1", configuration = DisableHystrixConfiguration.class)
+//@FeignClient(name = "zachard-service-1", configuration = DisableHystrixConfiguration.class)
+@FeignClient(name = "zachard-service-1")
 public interface ExtendsFeignParamService extends com.zachard.service.api.hello.service.ExtendsFeignParamService {
 
 }
