@@ -18,15 +18,19 @@ package com.zachard.spring.feign.hello.service;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
 
+import com.zachard.spring.feign.hello.configuration.DisableHystrixConfiguration;
+
 /**
  * 通过继承特性实现<code>Feign</code>方式服务调用--服务消费方Service
+ * 
  * <pre>
+ *     (1) {@link FeignClient}注解中的<code>configuration</code>属性指定了构建<b>Feign</b>客户端的配置类
  * </pre>
  *
  * @author zachard
  * @version 1.0.0
  */
-@FeignClient("zachard-service-1")
+@FeignClient(name = "zachard-service-1", configuration = DisableHystrixConfiguration.class)
 public interface ExtendsFeignParamService extends com.zachard.service.api.hello.service.ExtendsFeignParamService {
 
 }
