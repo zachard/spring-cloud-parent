@@ -21,5 +21,11 @@
           <groupId>org.springframework.cloud</groupId>
           <artifactId>spring-cloud-starter-zuul</artifactId>
       </dependency>
+      
+      <!-- 整合Eureka实现面向路由服务 -->
+      <dependency>
+          <groupId>org.springframework.cloud</groupId>
+          <artifactId>spring-cloud-starter-eureka</artifactId>
+      </dependency>
   </dependencies>
 </project>
