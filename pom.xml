@@ -73,6 +73,7 @@
     <module>hello-ribbon-consumer</module>
     <module>hello-feign-consumer</module>
     <module>hello-service-api</module>
+    <module>hello-zuul-gateway</module>
   </modules>
 
 </project>
