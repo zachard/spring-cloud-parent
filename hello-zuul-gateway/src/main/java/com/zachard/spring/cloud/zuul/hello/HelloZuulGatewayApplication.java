@@ -22,6 +22,7 @@ import org.springframework.cloud.client.SpringCloudApplication;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
+import org.springframework.cloud.netflix.zuul.filters.discovery.PatternServiceRouteMapper;
 import org.springframework.context.annotation.Bean;
 
 import com.zachard.spring.cloud.zuul.hello.filter.AccessFilter;
@@ -65,6 +66,18 @@ public class HelloZuulGatewayApplication {
 	@Bean
 	public AccessFilter getAccessFilter() {
 		return new AccessFilter();
+	}
+	
+	/**
+	 * 自定义路由映射器
+	 * 
+	 * @return    路由映射器对象
+	 */
+	@Bean
+	public PatternServiceRouteMapper getPatternServiceRouteMapper() {
+		return new PatternServiceRouteMapper(
+				"(?<name>^.+)-(?<version>v.+$)",
+				"${version}/${name}");  
 	}
 
 }
