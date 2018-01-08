@@ -22,6 +22,9 @@ import org.springframework.cloud.client.SpringCloudApplication;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
+import org.springframework.context.annotation.Bean;
+
+import com.zachard.spring.cloud.zuul.hello.filter.AccessFilter;
 
 /**
  * <code>Zuul</code>网关服务启动入口类
@@ -52,6 +55,16 @@ public class HelloZuulGatewayApplication {
 		 * 程序及程序对应的上下文
 		 */
 		new SpringApplicationBuilder(HelloZuulGatewayApplication.class).web(true).run(args);
+	}
+	
+	/**
+	 * 将一个{@link AccessFilter}过滤器对象注解为<code>Bean</code>对象
+	 * 
+	 * @return    <code>AccessFilter</code>过滤器对象
+	 */
+	@Bean
+	public AccessFilter getAccessFilter() {
+		return new AccessFilter();
 	}
 
 }
