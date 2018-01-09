@@ -17,7 +17,6 @@
 package com.zachard.spring.cloud.zuul.hello.filter;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,15 +65,17 @@ public class AccessFilter extends ZuulFilter {
 //			context.setResponseStatusCode(HttpStatus.UNAUTHORIZED.value());
 			
 			// 抛出异常, 并进入error过滤器, 并不会进入SendErrorFilter过滤器
-			try {
-				throw new RuntimeException("权限token为空");
-			} catch (Exception e) {
-				context.setThrowable(e);
-				context.set("sendErrorFilter.ran", true);
-				context.set("error.status_code", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-				context.set("error.exception", e);
-			}
+//			try {
+//				throw new RuntimeException("权限token为空");
+//			} catch (Exception e) {
+//				context.setThrowable(e);
+//				context.set("sendErrorFilter.ran", true);
+//				context.set("error.status_code", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+//				context.set("error.exception", e);
+//			}
 			
+			 // 抛出异常, 进入自定义ErrorFilter, 必须将自定义拦截器注解为Bean对象
+			 throw new RuntimeException("权限token为空");
 		}
 		
 		logger.info("权限认证通过, 请求token为: {}", accessToken);
@@ -82,7 +83,7 @@ public class AccessFilter extends ZuulFilter {
 	}
 
 	/**
-	 * 表示是否应该拦截(拦截器是否启用?)
+	 * 表示是否应该拦截
 	 * 
 	 * @return <code>true</code>表示需要执行拦截器, <code>false</code>表示不需要执行拦截器
 	 */
