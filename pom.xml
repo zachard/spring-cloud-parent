@@ -75,6 +75,7 @@
     <module>hello-service-api</module>
     <module>hello-zuul-gateway</module>
     <module>hello-config-server</module>
+    <module>hello-config-client</module>
   </modules>
 
 </project>
