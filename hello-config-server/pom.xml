@@ -23,6 +23,12 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-config-server</artifactId>
 		</dependency>
+		
+		<!-- 保护配置中心服务端 -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
 	</dependencies>
 	<description>Spring Config 配置中心服务端</description>
 
