@@ -23,11 +23,18 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-config-server</artifactId>
 		</dependency>
-		
+
 		<!-- 保护配置中心服务端 -->
 		<dependency>
-		    <groupId>org.springframework.boot</groupId>
-		    <artifactId>spring-boot-starter-security</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<!-- Spring Cloud Eureka 起步依赖 -->
+		<!-- 这个包需要加入, 主要是为了连接到Eureka注册中心, 引入这个包之后, 必须配置注册中心地址, 否则项目启动出错 -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-eureka</artifactId>
 		</dependency>
 	</dependencies>
 	<description>Spring Config 配置中心服务端</description>
