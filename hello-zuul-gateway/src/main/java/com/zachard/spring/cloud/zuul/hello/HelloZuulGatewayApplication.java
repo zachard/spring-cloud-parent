@@ -18,13 +18,17 @@ package com.zachard.spring.cloud.zuul.hello;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.client.SpringCloudApplication;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
+import org.springframework.cloud.netflix.zuul.filters.ZuulProperties;
 import org.springframework.cloud.netflix.zuul.filters.discovery.PatternServiceRouteMapper;
 import org.springframework.cloud.netflix.zuul.filters.post.SendErrorFilter;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import com.zachard.spring.cloud.zuul.hello.filter.AccessFilter;
 
@@ -89,6 +93,25 @@ public class HelloZuulGatewayApplication {
 		return new PatternServiceRouteMapper(
 				"(?<name>^.+)-(?<version>v.+$)",
 				"${version}/${name}");  
+	}
+	
+	/**
+	 * 创建一个{@link ZuulProperties}属性对象
+	 * 
+	 * <pre>
+	 *     (1) {@link RefreshScope}注解表示开启refresh机制, 当在配置中心客户端请求<code>/refresh</code>
+	 *         的时候, 会重新从配置中心的服务端获取值
+	 *     (2) {@link ConfigurationProperties}注解用于注解外部配置, 如果想要绑定或是校验一些外部属性, 可将
+	 *         此注解用于{@link Configuration}注解的类或是{@link Bean}注解的方法之上
+	 * </pre>
+	 * 
+	 * @return
+	 */
+	@Bean
+	@RefreshScope
+	@ConfigurationProperties("zuul")
+	public ZuulProperties zuulProperties() {
+		return new ZuulProperties();
 	}
 
 }

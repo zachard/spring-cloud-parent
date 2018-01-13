@@ -1,31 +1,38 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>com.zachard.spring.cloud</groupId>
-    <artifactId>spring-cloud-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-  </parent>
-  
-  <artifactId>hello-zuul-gateway</artifactId>
-  <name>hello-zuul-gateway</name>
-  
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-  
-  <dependencies>
-      <!-- Spring Cloud API网关起步依赖, 会加入Hystrix, Ribbon, Spring-Boot-Actuator等依赖 -->
-      <dependency>
-          <groupId>org.springframework.cloud</groupId>
-          <artifactId>spring-cloud-starter-zuul</artifactId>
-      </dependency>
-      
-      <!-- 整合Eureka实现面向路由服务 -->
-      <dependency>
-          <groupId>org.springframework.cloud</groupId>
-          <artifactId>spring-cloud-starter-eureka</artifactId>
-      </dependency>
-  </dependencies>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.zachard.spring.cloud</groupId>
+		<artifactId>spring-cloud-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>hello-zuul-gateway</artifactId>
+	<name>hello-zuul-gateway</name>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+		<!-- Spring Cloud API网关起步依赖, 会加入Hystrix, Ribbon, Spring-Boot-Actuator等依赖 -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-zuul</artifactId>
+		</dependency>
+
+		<!-- 整合Eureka实现面向路由服务 -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-eureka</artifactId>
+		</dependency>
+
+		<!-- Spring Config 配置中心客户端起步依赖 -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-config</artifactId>
+		</dependency>
+	</dependencies>
 </project>
