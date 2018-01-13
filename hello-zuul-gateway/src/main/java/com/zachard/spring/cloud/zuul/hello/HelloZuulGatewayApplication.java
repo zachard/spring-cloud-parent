@@ -19,6 +19,7 @@ package com.zachard.spring.cloud.zuul.hello;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.client.SpringCloudApplication;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -27,9 +28,15 @@ import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.cloud.netflix.zuul.filters.ZuulProperties;
 import org.springframework.cloud.netflix.zuul.filters.discovery.PatternServiceRouteMapper;
 import org.springframework.cloud.netflix.zuul.filters.post.SendErrorFilter;
+import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.netflix.zuul.FilterFileManager;
+import com.netflix.zuul.FilterLoader;
+import com.netflix.zuul.groovy.GroovyCompiler;
+import com.netflix.zuul.groovy.GroovyFileFilter;
+import com.zachard.spring.cloud.zuul.hello.configuration.DynamicFilterConfiguration;
 import com.zachard.spring.cloud.zuul.hello.filter.AccessFilter;
 
 /**
@@ -41,12 +48,14 @@ import com.zachard.spring.cloud.zuul.hello.filter.AccessFilter;
  *     (2) {@link EnableZuulProxy}注解用于构建一个<code>Zuul</code>服务端并为其安装一些反向代理过滤器, 
  *         这样<code>Zuul</code>服务端可以实现将请求转发到后端服务器. 后端服务的注册可以通过手动配置方式或是
  *         <code>DiscoveryClient</code>注册中心方式实现
+ *     (3) {@link EnableConfigurationProperties}注解表示开启配置属性功能
  * </pre>
  *
  * @author zachard
  * @version 1.0.0
  */
 @EnableZuulProxy
+@EnableConfigurationProperties({DynamicFilterConfiguration.class})
 @SpringCloudApplication
 public class HelloZuulGatewayApplication {
 	
@@ -112,6 +121,39 @@ public class HelloZuulGatewayApplication {
 	@ConfigurationProperties("zuul")
 	public ZuulProperties zuulProperties() {
 		return new ZuulProperties();
+	}
+	
+	/**
+	 * 创建一个过滤器加载器对象
+	 * 
+	 * <pre>
+	 *     (1) {@link FilterLoader}用于加载编译过滤器类文件并检查它的源代码是否被改变
+	 * </pre>
+	 * 
+	 * @param dynamicFilterConfiguration
+	 * @return
+	 */
+	@Bean
+	public FilterLoader filterLoader(DynamicFilterConfiguration dynamicFilterConfiguration) {
+		FilterLoader filterLoader = FilterLoader.getInstance();
+		// GroovyCompiler编译用于编译FilterLoader加载的文件
+		filterLoader.setCompiler(new GroovyCompiler());
+		
+		try {
+			/*
+			 * FilterFileManager用于轮询指定目录下文件改变, 轮询的路径及时间间隔在初始化类时指定, 
+			 * 之后轮询器将监测指定目录下的修改
+			 */
+			FilterFileManager.setFilenameFilter(new GroovyFileFilter());
+			FilterFileManager.init(
+					dynamicFilterConfiguration.getInterval(), 
+					dynamicFilterConfiguration.getRoot() + "/" + FilterConstants.PRE_TYPE, 
+					dynamicFilterConfiguration.getRoot() + "/" + FilterConstants.POST_TYPE);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		
+		return filterLoader;
 	}
 
 }
