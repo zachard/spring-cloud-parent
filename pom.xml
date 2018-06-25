@@ -1,7 +1,83 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.zachard.spring.cloud</groupId>
-  <artifactId>spring-cloud-parent</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
-  <packaging>pom</packaging>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.zachard.spring.cloud</groupId>
+	<artifactId>spring-cloud-parent</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<properties>
+		<jdk.version>1.8</jdk.version>
+		<junit.version>4.12</junit.version>
+		<sl4fj.log4j.version>1.7.21</sl4fj.log4j.version>
+		<apache.common.lang3.version>3.4</apache.common.lang3.version>
+		<apache.common.collection.version>3.2.1</apache.common.collection.version>
+		<spring.boot.dependencies.version>1.5.9.RELEASE</spring.boot.dependencies.version>
+		<spring.cloud.dependencies.version>Edgware.RELEASE</spring.cloud.dependencies.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- Spring Boot dependencies -->
+			<dependency>
+				<!-- 从Spring Boot中导入依赖管理,进而避免项目parent依赖Spring Boot -->
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>${spring.boot.dependencies.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<!-- Spring Cloud dependencies -->
+			<dependency>
+				<!-- 从Spring Cloud中导入依赖管理,进而避免项目parent依赖Spring Cloud -->
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring.cloud.dependencies.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<!-- junit -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+				<scope>test</scope>
+			</dependency>
+
+			<!-- log -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>${sl4fj.log4j.version}</version>
+			</dependency>
+
+			<!-- apache -->
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>${apache.common.lang3.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-collections</groupId>
+				<artifactId>commons-collections</artifactId>
+				<version>${apache.common.collection.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<modules>
+		<module>hello-spring-cloud</module>
+		<module>hello-eureka-server</module>
+		<module>hello-ribbon-consumer</module>
+		<module>hello-feign-consumer</module>
+		<module>hello-service-api</module>
+		<module>hello-zuul-gateway</module>
+		<module>hello-config-server</module>
+		<module>hello-config-client</module>
+		<module>hello-apache-rabbitmq</module>
+	</modules>
+
 </project>
